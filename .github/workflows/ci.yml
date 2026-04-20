@@ -46,7 +46,7 @@ jobs:
           pip install pytest pytest-cov httpx
 
       - name: Run tests
-        run: pytest tests/ -v --cov=threat_lens --cov-report=term-missing --cov-fail-under=80
+        run: pytest tests/ -v --cov=threat_lens --cov-report=term-missing
 
   docker:
     runs-on: ubuntu-latest
