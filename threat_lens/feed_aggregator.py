@@ -61,7 +61,9 @@ class FeedAggregator:
     @property
     def events(self) -> list[ThreatEvent]:
         with self._lock:
-            return sorted(self._events.values(), key=lambda e: e.timestamp, reverse=True)
+            return sorted(
+                self._events.values(), key=lambda e: e.timestamp, reverse=True
+            )
 
     def refresh(self, cve_days: int = 7, cve_limit: int = 50) -> list[ThreatEvent]:
         """Pull fresh data from all sources, score, deduplicate, and return events."""
@@ -129,20 +131,29 @@ class FeedAggregator:
 
         buf = io.StringIO()
         writer = csv.writer(buf)
-        writer.writerow([
-            "event_id", "timestamp", "source", "title",
-            "severity", "composite_score", "description",
-        ])
+        writer.writerow(
+            [
+                "event_id",
+                "timestamp",
+                "source",
+                "title",
+                "severity",
+                "composite_score",
+                "description",
+            ]
+        )
         for ev in events:
-            writer.writerow([
-                ev.event_id,
-                ev.timestamp.isoformat(),
-                ev.source.value,
-                ev.title,
-                ev.severity.value,
-                ev.score.composite_score if ev.score else "",
-                ev.description,
-            ])
+            writer.writerow(
+                [
+                    ev.event_id,
+                    ev.timestamp.isoformat(),
+                    ev.source.value,
+                    ev.title,
+                    ev.severity.value,
+                    ev.score.composite_score if ev.score else "",
+                    ev.description,
+                ]
+            )
         return buf.getvalue()
 
     def start_background(self, cve_days: int = 7, cve_limit: int = 50) -> None:
@@ -161,9 +172,13 @@ class FeedAggregator:
                     logger.exception("Background feed refresh failed")
                 self._stop_event.wait(self._refresh_interval)
 
-        self._bg_thread = threading.Thread(target=_loop, daemon=True, name="feed-refresh")
+        self._bg_thread = threading.Thread(
+            target=_loop, daemon=True, name="feed-refresh"
+        )
         self._bg_thread.start()
-        logger.info("Background feed refresh started (interval=%ds)", self._refresh_interval)
+        logger.info(
+            "Background feed refresh started (interval=%ds)", self._refresh_interval
+        )
 
     def stop_background(self) -> None:
         self._stop_event.set()

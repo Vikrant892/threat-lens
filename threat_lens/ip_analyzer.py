@@ -169,7 +169,9 @@ class IPAnalyzer:
             resp.raise_for_status()
             data = resp.json()
             if data.get("status") == "fail":
-                logger.warning("GeoIP lookup failed for %s: %s", ip, data.get("message"))
+                logger.warning(
+                    "GeoIP lookup failed for %s: %s", ip, data.get("message")
+                )
                 return {}
             return data
         except requests.RequestException as exc:
@@ -213,7 +215,11 @@ class IPAnalyzer:
             registrar = data.get("name", "")
             events = data.get("events", [])
             creation = next(
-                (e["eventDate"] for e in events if e.get("eventAction") == "registration"),
+                (
+                    e["eventDate"]
+                    for e in events
+                    if e.get("eventAction") == "registration"
+                ),
                 None,
             )
             return {"registrar": registrar, "creation_date": creation}
@@ -257,7 +263,9 @@ class IPAnalyzer:
             score += 5
 
         org = (intel.org or "").lower()
-        if any(kw in org for kw in ["vps", "cloud", "hosting", "server", "data center"]):
+        if any(
+            kw in org for kw in ["vps", "cloud", "hosting", "server", "data center"]
+        ):
             score += 10
 
         return min(score, 100.0)

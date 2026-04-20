@@ -79,10 +79,12 @@ class NVDClient:
         adapter = HTTPAdapter(max_retries=retries, pool_connections=4, pool_maxsize=4)
         session.mount("https://", adapter)
 
-        session.headers.update({
-            "User-Agent": "ThreatLens/1.0 (threat-intelligence-platform)",
-            "Accept": "application/json",
-        })
+        session.headers.update(
+            {
+                "User-Agent": "ThreatLens/1.0 (threat-intelligence-platform)",
+                "Accept": "application/json",
+            }
+        )
         if self._api_key:
             session.headers["apiKey"] = self._api_key
         return session

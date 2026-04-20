@@ -90,7 +90,9 @@ async def rate_limit_middleware(request: Request, call_next):
     window.append(now)
     response = await call_next(request)
     response.headers["X-RateLimit-Limit"] = str(RATE_LIMIT_MAX)
-    response.headers["X-RateLimit-Remaining"] = str(max(RATE_LIMIT_MAX - len(window), 0))
+    response.headers["X-RateLimit-Remaining"] = str(
+        max(RATE_LIMIT_MAX - len(window), 0)
+    )
     return response
 
 
@@ -98,10 +100,13 @@ async def rate_limit_middleware(request: Request, call_next):
 # CVE endpoints
 # ---------------------------------------------------------------------------
 
+
 @app.get("/api/cves")
 def list_cves(
     keyword: Optional[str] = Query(None, description="Full-text keyword filter"),
-    severity: Optional[str] = Query(None, description="CVSS v3 severity (LOW, MEDIUM, HIGH, CRITICAL)"),
+    severity: Optional[str] = Query(
+        None, description="CVSS v3 severity (LOW, MEDIUM, HIGH, CRITICAL)"
+    ),
     days: int = Query(7, ge=1, le=120, description="Look-back window in days"),
     limit: int = Query(20, ge=1, le=200, description="Maximum results"),
 ):
@@ -109,6 +114,7 @@ def list_cves(
     try:
         pub_end = datetime.utcnow()
         from datetime import timedelta
+
         pub_start = pub_end - timedelta(days=days)
 
         records = nvd.search(
@@ -153,6 +159,7 @@ def get_cve(cve_id: str):
 # IP intelligence endpoint
 # ---------------------------------------------------------------------------
 
+
 @app.get("/api/ip/{ip_address}")
 def analyze_ip(ip_address: str):
     """Return geolocation, reverse DNS, and abuse score for an IP."""
@@ -170,6 +177,7 @@ def analyze_ip(ip_address: str):
 # ---------------------------------------------------------------------------
 # Aggregated threat feed
 # ---------------------------------------------------------------------------
+
 
 @app.get("/api/threats")
 def threat_feed(
@@ -217,6 +225,7 @@ def refresh_feed(
 # MITRE ATT&CK endpoints
 # ---------------------------------------------------------------------------
 
+
 @app.get("/api/mitre/techniques")
 def list_techniques(
     tactic: Optional[str] = Query(None, description="Filter by tactic name"),
@@ -238,7 +247,9 @@ def get_technique(technique_id: str):
     """Retrieve details for a specific ATT&CK technique by ID."""
     tech = mitre.get_technique(technique_id)
     if not tech:
-        raise HTTPException(status_code=404, detail=f"Technique {technique_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Technique {technique_id} not found"
+        )
     return tech.model_dump(mode="json")
 
 
@@ -252,6 +263,7 @@ def list_tactics():
 # Dashboard stats
 # ---------------------------------------------------------------------------
 
+
 @app.get("/api/stats")
 def dashboard_stats():
     """Aggregated statistics for the threat dashboard."""
@@ -261,6 +273,7 @@ def dashboard_stats():
 # ---------------------------------------------------------------------------
 # Health check
 # ---------------------------------------------------------------------------
+
 
 @app.get("/healthz")
 def healthz():

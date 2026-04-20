@@ -86,7 +86,13 @@ class ThreatScorer:
         )
         composite = round(min(max(composite, 0.0), 100.0), 2)
 
-        factors = self._explain(cve, cvss_component, exploit_component, exposure_component, temporal_component)
+        factors = self._explain(
+            cve,
+            cvss_component,
+            exploit_component,
+            exposure_component,
+            temporal_component,
+        )
 
         return ThreatScore(
             composite_score=composite,
@@ -132,15 +138,25 @@ class ThreatScorer:
         count = asset_count if asset_count is not None else len(cve.affected_products)
 
         HIGH_IMPACT_VENDORS = {
-            "microsoft", "apple", "google", "linux", "apache",
-            "oracle", "cisco", "vmware", "adobe", "redhat",
+            "microsoft",
+            "apple",
+            "google",
+            "linux",
+            "apache",
+            "oracle",
+            "cisco",
+            "vmware",
+            "adobe",
+            "redhat",
         }
 
         base = min(count * 12.0, 60.0)
 
         vendor_bonus = 0.0
         for product in cve.affected_products:
-            vendor = product.split("/")[0].lower() if "/" in product else product.lower()
+            vendor = (
+                product.split("/")[0].lower() if "/" in product else product.lower()
+            )
             if vendor in HIGH_IMPACT_VENDORS:
                 vendor_bonus = 40.0
                 break
