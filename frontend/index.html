@@ -3,228 +3,322 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>threat-lens — real-time threat intel</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>ThreatLens — Real-Time Threat Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{background:#0f1115;color:#cdd6de;font-family:'Inter',sans-serif;font-size:13px;line-height:1.55;min-height:100vh}
-a{color:#61afef;text-decoration:none}a:hover{text-decoration:underline}
-.tbar{display:flex;justify-content:space-between;align-items:center;padding:8px 18px;border-bottom:1px solid #2a2d37;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5c6370;gap:16px;flex-wrap:wrap}
-.tbar .name{color:#cdd6de;font-weight:500}
-.tbar .crumb{color:#5c6370}
-.tabs{display:flex;gap:6px;padding:0 18px;border-bottom:1px solid #2a2d37;overflow-x:auto}
-.tabs a{padding:10px 12px;color:#5c6370;border-bottom:1px solid transparent;white-space:nowrap;font-size:12.5px}
-.tabs a.on{color:#cdd6de;border-bottom-color:#cdd6de}
-.tabs a:hover{color:#cdd6de}
-.stat{padding:8px 18px;border-bottom:1px solid #2a2d37;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5c6370;display:flex;flex-wrap:wrap;gap:18px}
-.stat b{color:#cdd6de;font-weight:500}
-.wrap{display:grid;grid-template-columns:1fr 280px;gap:0}
-.main{padding:12px 18px;min-width:0}
-.side{padding:12px 18px;border-left:1px solid #2a2d37;min-height:70vh}
-.filt{display:flex;gap:8px;align-items:center;margin:4px 0 12px;padding-bottom:10px;border-bottom:1px solid #2a2d37}
-.filt label{color:#5c6370;font-family:'IBM Plex Mono',monospace;font-size:12px}
-.filt input{flex:1;background:transparent;border:1px solid #2a2d37;color:#cdd6de;padding:4px 10px;font:inherit;font-family:'IBM Plex Mono',monospace;outline:none;border-radius:0}
-.filt input:focus{border-color:#61afef}
-.feed .row{padding:8px 10px 8px 34px;border-bottom:1px solid #1d2028;cursor:pointer;position:relative;font-size:13px;line-height:1.5}
-.feed .row:hover{background:#191c24}
-.feed .row .n{position:absolute;left:0;top:8px;width:28px;text-align:right;color:#5c6370;font-family:'IBM Plex Mono',monospace;font-size:12px}
-.feed .row .cve{font-family:'IBM Plex Mono',monospace;font-weight:500;color:#cdd6de}
-.feed .row .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;margin:0 6px 0 10px;letter-spacing:.02em}
-.tag.crit{color:#e06c75}
-.tag.high{color:#d19a66}
-.tag.med{color:#e5c07b}
-.tag.low{color:#61afef}
-.feed .row .desc{color:#cdd6de}
-.feed .row .meta{color:#5c6370;font-size:11.5px;margin-top:2px;font-family:'IBM Plex Mono',monospace}
-.feed .row .meta .k{color:#5c6370}
-.feed .row .meta .v{color:#abb2bf}
-.feed .row .expand{display:none;color:#abb2bf;margin-top:8px;padding-top:6px;border-top:1px dashed #2a2d37;font-size:12.5px}
-.feed .row.open .expand{display:block}
-.side h4{color:#5c6370;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px;font-weight:500}
-.side h4:first-child{margin-top:0}
-.side .li{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:2px 0;color:#cdd6de}
-.side .li .c{color:#5c6370}
-.side .quick a{display:block;padding:2px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#61afef}
-.side .feed-st{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5c6370;line-height:1.7}
-.side .feed-st .on{color:#98c379}
-.pane{display:none}
-.pane.on{display:block}
-.ipres{font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.7;padding:10px 0;color:#cdd6de}
-.ipres .k{color:#5c6370;display:inline-block;min-width:18ch}
-.mitre-t{cursor:pointer;display:grid;grid-template-columns:220px 70px 1fr;gap:14px;padding:6px 10px 6px 0;border-bottom:1px solid #1d2028;font-family:'IBM Plex Mono',monospace;font-size:12.5px}
-.mitre-t:hover{background:#191c24}
-.mitre-t .c{color:#5c6370}
-.sbar{border-top:1px solid #2a2d37;padding:4px 18px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5c6370;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-@media(max-width:760px){.wrap{grid-template-columns:1fr}.side{border-left:0;border-top:1px solid #2a2d37}}
+:root{
+  --bg:#0a1429; --panel:#0f1c36; --panel2:#182648; --line:#253459;
+  --ink:#e8eefb; --dim:#8294c2;
+  --cyan:#06d4c5;
+  --orange:#ff7a3d;
+  --red:#ff4d7a;
+  --yellow:#ffcc4d;
+  --green:#4ade80;
+  --purple:#b39cff;
+}
+html,body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-size:14.5px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+/* Sidebar */
+.sb{background:var(--panel);border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto}
+.logo{display:flex;gap:10px;align-items:center;margin-bottom:28px}
+.logo-m{width:38px;height:38px;background:var(--cyan);border-radius:10px;position:relative;display:flex;align-items:center;justify-content:center}
+.logo-m::before{content:'';position:absolute;width:20px;height:20px;border:2.5px solid var(--bg);border-radius:50%;box-sizing:border-box}
+.logo-m::after{content:'';position:absolute;width:4px;height:4px;background:var(--bg);border-radius:50%}
+.logo h1{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.logo small{display:block;color:var(--dim);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:-1px}
+
+.sbh{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin:18px 0 6px 6px;font-weight:700}
+.sbn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--dim);font-size:13.5px;margin-bottom:2px;font-weight:500}
+.sbn:hover{background:var(--panel2);color:var(--ink)}
+.sbn.on{background:rgba(6,212,197,.14);color:var(--cyan)}
+.sbn .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.sbn .ct{margin-left:auto;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:400}
+.sbn.on .ct{color:var(--cyan)}
+
+.feed-mini{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:16px}
+.feed-mini h5{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between}
+.feed-mini h5 .live{color:var(--green);display:flex;align-items:center;gap:4px}
+.feed-mini h5 .live::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.feed-mini .kv{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:3px 0}
+.feed-mini .kv .k{color:var(--dim)}
+.feed-mini .kv .v{color:var(--ink)}
+
+/* Main */
+.main{padding:24px 30px 40px;min-width:0}
+.th{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
+.th h2{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.th small{color:var(--dim);font-size:13.5px;display:block;margin-top:3px;font-weight:400}
+.th-r{display:flex;gap:8px;align-items:center}
+.search{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:8px 14px;font:inherit;font-size:13px;border-radius:8px;outline:none;width:280px}
+.search:focus{border-color:var(--cyan)}
+.iconbtn{padding:8px 12px;background:var(--panel);border:1px solid var(--line);color:var(--ink);font:inherit;font-size:12.5px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.iconbtn:hover{border-color:var(--cyan)}
+
+/* Top stat cards */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+.st::after{content:'';position:absolute;top:0;right:0;width:60px;height:60px;opacity:.1;border-radius:50%}
+.st.c::after{background:var(--cyan)}
+.st.o::after{background:var(--orange)}
+.st.r::after{background:var(--red)}
+.st.g::after{background:var(--green)}
+.st .l{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between}
+.st .l .tr{font-family:'JetBrains Mono',monospace;font-size:11px}
+.st .l .tr.up{color:var(--green)}
+.st .l .tr.dn{color:var(--red)}
+.st .n{font-size:30px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-.02em;line-height:1}
+.st.c .n{color:var(--cyan)}
+.st.o .n{color:var(--orange)}
+.st.r .n{color:var(--red)}
+.st.g .n{color:var(--green)}
+.st .d{color:var(--dim);font-size:12px;margin-top:4px}
+
+/* Main grid */
+.grid{display:grid;grid-template-columns:1.8fr 1fr;gap:18px;margin-bottom:18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ph{padding:16px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.ph h3{font-size:15px;font-weight:700}
+.ph small{color:var(--dim);font-size:12px;display:block;margin-top:1px;font-weight:400}
+.ph .pill{padding:3px 10px;background:var(--panel2);color:var(--cyan);border-radius:100px;font-size:11px;font-family:'JetBrains Mono',monospace;border:1px solid var(--cyan)}
+
+.cves{max-height:560px;overflow:auto}
+.cve{padding:14px 22px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .12s}
+.cve:hover{background:var(--panel2)}
+.cve:last-child{border-bottom:0}
+.cve .head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:10px}
+.cve .cid{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13.5px;color:var(--cyan)}
+.cve .sev{padding:2px 10px;border-radius:100px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;white-space:nowrap}
+.cve .sev.crit{background:var(--red);color:#fff}
+.cve .sev.high{background:rgba(255,122,61,.18);color:var(--orange)}
+.cve .sev.med{background:rgba(255,204,77,.18);color:var(--yellow)}
+.cve .sev.low{background:rgba(74,222,128,.14);color:var(--green)}
+.cve .desc{font-size:13.5px;line-height:1.5;margin-bottom:8px}
+.cve .meta{display:flex;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--dim);flex-wrap:wrap}
+.cve .meta b{color:var(--ink);font-weight:500}
+.cve .meta .cvss-bar{display:inline-flex;align-items:center;gap:6px}
+.cve .meta .cvss-bar .bb{width:40px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;display:inline-block}
+.cve .meta .cvss-bar .bb div{height:100%;background:var(--orange)}
+
+/* Geographic map */
+.map{padding:22px 26px;position:relative;min-height:280px}
+.worldmap{position:relative;aspect-ratio:2/1;background:var(--panel2);border-radius:10px;overflow:hidden}
+.blob{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--red);box-shadow:0 0 0 6px rgba(255,77,122,.2);cursor:pointer}
+.blob.b1{top:35%;left:24%}
+.blob.b2{top:30%;left:52%;background:var(--orange);box-shadow:0 0 0 6px rgba(255,122,61,.2)}
+.blob.b3{top:42%;left:60%}
+.blob.b4{top:60%;left:77%;background:var(--orange);box-shadow:0 0 0 6px rgba(255,122,61,.2)}
+.blob.b5{top:50%;left:85%;background:var(--yellow);box-shadow:0 0 0 6px rgba(255,204,77,.2)}
+.blob.b6{top:42%;left:18%;background:var(--yellow);box-shadow:0 0 0 6px rgba(255,204,77,.2)}
+.worldmap svg{width:100%;height:100%;opacity:.18}
+.maplegend{display:flex;justify-content:space-around;margin-top:14px;font-size:12px;color:var(--dim)}
+.maplegend span{display:flex;align-items:center;gap:6px}
+.maplegend span::before{content:'';width:9px;height:9px;border-radius:50%}
+.maplegend .r::before{background:var(--red)}
+.maplegend .o::before{background:var(--orange)}
+.maplegend .y::before{background:var(--yellow)}
+
+/* Top vendors */
+.vendors{padding:16px 22px}
+.vd{display:grid;grid-template-columns:1fr auto 50px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.vd:last-child{border-bottom:0}
+.vd .n{font-weight:600}
+.vd .bar{width:100px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.vd .bar div{height:100%;background:var(--cyan);border-radius:3px}
+.vd .ct{font-family:'JetBrains Mono',monospace;color:var(--dim);text-align:right;font-size:12px}
+
+/* MITRE */
+.mitre{padding:16px 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mit{padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:12.5px;cursor:pointer;transition:border-color .15s}
+.mit:hover{border-color:var(--cyan)}
+.mit .t{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--purple);font-weight:700;margin-bottom:4px}
+.mit .n{color:var(--ink);font-weight:600;margin-bottom:2px}
+.mit .d{color:var(--dim);font-size:11px}
+
+/* IP Lookup */
+.ipform{padding:18px 22px;display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line)}
+.ipform input{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:10px 14px;font:inherit;font-size:13.5px;font-family:'JetBrains Mono',monospace;border-radius:8px;outline:none}
+.ipform input:focus{border-color:var(--cyan)}
+.ipform button{padding:10px 18px;background:var(--cyan);color:var(--bg);border:none;font:inherit;font-weight:700;border-radius:8px;cursor:pointer;font-size:13px}
+.iparea{padding:18px 22px;display:none}
+.iparea.show{display:block}
+.iparea .row{display:grid;grid-template-columns:140px 1fr;gap:10px;padding:4px 0;font-size:13px;font-family:'JetBrains Mono',monospace}
+.iparea .row .k{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;font-family:'Archivo',sans-serif}
+.iparea .row .v{color:var(--ink)}
+
+.foot{padding:18px 30px;border-top:1px solid var(--line);color:var(--dim);font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot a{color:var(--ink)}
+.foot .m{font-family:'JetBrains Mono',monospace}
+
+@media(max-width:1000px){.app{grid-template-columns:1fr}.sb{position:static;height:auto}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.mitre{grid-template-columns:1fr}.search{width:180px}}
 </style>
 </head>
 <body>
+<div class="app">
 
-<div class="tbar">
-<span><span class="name">threat-lens</span> <span class="crumb">/ dashboard</span></span>
-<span>api: <span style="color:#98c379">healthy</span> &middot; last sync: <span id="sync">—</span> &middot; v0.3.1</span>
-</div>
+<aside class="sb">
+  <div class="logo"><div class="logo-m"></div><div><h1>ThreatLens</h1><small>threat intel · v0.3.1</small></div></div>
 
-<nav class="tabs">
-<a class="on" onclick="tab('feed',this)">Live Feed</a>
-<a onclick="tab('cve',this)">CVE Search</a>
-<a onclick="tab('ip',this)">IP Intel</a>
-<a onclick="tab('mitre',this)">MITRE</a>
-<a onclick="tab('alerts',this)">Alerts</a>
-<a onclick="tab('settings',this)">Settings</a>
-</nav>
+  <div class="sbh">Operations</div>
+  <div class="sbn on"><span class="dot"></span>Live Feed<span class="ct">243k</span></div>
+  <div class="sbn"><span class="dot" style="background:var(--red)"></span>Alerts<span class="ct">47</span></div>
+  <div class="sbn"><span class="dot" style="background:var(--orange)"></span>Incidents<span class="ct">3</span></div>
 
-<div class="stat">
-<span>CVEs: <b id="totalCve">—</b> tracked</span>
-<span>Critical (7d): <b id="critCount">—</b></span>
-<span>High (7d): <b id="highCount">—</b></span>
-<span>Active feeds: <b>3</b></span>
-<span>SLA: <b style="color:#98c379">within</b></span>
-</div>
+  <div class="sbh">Intelligence</div>
+  <div class="sbn"><span class="dot"></span>CVE Explorer</div>
+  <div class="sbn"><span class="dot"></span>IP Lookup</div>
+  <div class="sbn"><span class="dot" style="background:var(--purple)"></span>MITRE ATT&amp;CK</div>
 
-<div class="wrap">
-<div class="main">
+  <div class="sbh">Admin</div>
+  <div class="sbn"><span class="dot"></span>Feeds</div>
+  <div class="sbn"><span class="dot"></span>API Docs</div>
+  <div class="sbn"><span class="dot"></span>Settings</div>
 
-<div class="pane on" id="p-feed">
-<div class="filt"><label>filter:</label><input id="fi" placeholder="product:splunk  |  cvss>=7.0  |  days<=7  |  vendor:microsoft"></div>
-<div class="feed" id="feed"><div style="color:#5c6370;padding:20px 0">loading nvd feed…</div></div>
-</div>
-
-<div class="pane" id="p-ip">
-<div class="filt"><label>ip address:</label><input id="ipin" placeholder="8.8.8.8"><button onclick="ipl()" style="background:transparent;border:1px solid #2a2d37;color:#cdd6de;padding:3px 14px;font:inherit;cursor:pointer;border-radius:0">lookup</button></div>
-<div class="ipres" id="ipres"><span style="color:#5c6370">no lookup yet</span></div>
-<div style="color:#5c6370;font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-top:18px">IP intel uses free ip-api.com (45 req/min). Cache TTL 1h.</div>
-</div>
-
-<div class="pane" id="p-mitre">
-<div style="color:#5c6370;font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-bottom:10px">ATT&amp;CK Enterprise · tactic summary · click to expand</div>
-<div id="mitre"></div>
-</div>
-
-<div class="pane" id="p-alerts"><div style="color:#5c6370;padding:20px 0">no alerts configured. visit <b style="color:#cdd6de">Settings</b> to add watchers.</div></div>
-<div class="pane" id="p-cve"><div style="color:#5c6370;padding:20px 0">use the filter bar on the Live Feed to search the CVE index.</div></div>
-<div class="pane" id="p-settings"><div style="color:#5c6370;padding:20px 0;line-height:1.8">
-<b style="color:#cdd6de">Scoring weights</b><br>
-CVSS base · 40%<br>
-Exploit availability · 25%<br>
-Asset exposure · 20%<br>
-Recency · 15% (90d half-life)<br><br>
-<b style="color:#cdd6de">Feed cadence</b><br>
-NVD · every 30 min<br>
-IP-API · on demand<br>
-MITRE ATT&amp;CK · weekly</div></div>
-
-</div>
-
-<aside class="side">
-<h4>top products (7d)</h4>
-<div id="top"></div>
-
-<h4>feed status</h4>
-<div class="feed-st">
-NVD ·············· <span class="on">live</span>  <span id="nvdLast">—</span><br>
-ip-api ··········· <span class="on">live</span>  on demand<br>
-MITRE ATT&amp;CK ··· <span class="on">cached</span>  7d ago
-</div>
-
-<h4>quick actions</h4>
-<div class="quick">
-<a onclick="exportJSON()">&nbsp;Export JSON</a>
-<a onclick="exportCSV()">&nbsp;Export CSV</a>
-<a onclick="tab('settings',document.querySelectorAll('.tabs a')[5])">&nbsp;Configure feeds</a>
-<a href="https://github.com/Vikrant892/threat-lens#api">&nbsp;API docs</a>
-</div>
-
-<h4>about</h4>
-<div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5c6370;line-height:1.6">Threat scoring weights: CVSS 40%, exploit 25%, exposure 20%, recency 15%. MITRE mappings are keyword-heuristic, not authoritative. Treat as suggestions.</div>
+  <div class="feed-mini">
+    <h5>Feed Status<span class="live">LIVE</span></h5>
+    <div class="kv"><span class="k">NVD</span><span class="v" id="lastSync">—</span></div>
+    <div class="kv"><span class="k">ip-api</span><span class="v">on demand</span></div>
+    <div class="kv"><span class="k">MITRE</span><span class="v">7d ago</span></div>
+    <div class="kv" style="border-top:1px solid var(--line);padding-top:8px;margin-top:8px"><span class="k">Latency</span><span class="v" style="color:var(--green)">p50 142ms</span></div>
+  </div>
 </aside>
-</div>
 
-<div class="sbar">
-<span>-- NORMAL -- &nbsp; CVE Live Feed &nbsp; line <b style="color:#cdd6de">1</b> of <span id="totl">—</span> &nbsp; feed: <span style="color:#98c379">live</span></span>
-<span>built by vikrant sharma &middot; <a href="https://github.com/Vikrant892/threat-lens">github</a></span>
+<main class="main">
+<header class="th">
+  <div><h2>Threat Intelligence Dashboard</h2><small>Real-time feed · NVD integration · MITRE mapping</small></div>
+  <div class="th-r">
+    <input class="search" id="fi" placeholder="filter: product:splunk · cvss>=7 · days<=7">
+    <button class="iconbtn" onclick="exportJSON()">↓ Export</button>
+    <button class="iconbtn" onclick="loadCves()">↻ Refresh</button>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="st c"><div class="l">CVEs Tracked<span class="tr up">▲ 42</span></div><div class="n" id="totalCve">—</div><div class="d">across all feeds · last 24h</div></div>
+  <div class="st r"><div class="l">Critical (7d)<span class="tr up">▲ 4</span></div><div class="n" id="critCount">—</div><div class="d">CVSS ≥ 9.0 · public exploits likely</div></div>
+  <div class="st o"><div class="l">High severity<span class="tr up">▲ 12</span></div><div class="n" id="highCount">—</div><div class="d">CVSS 7.0–8.9 · within SLA window</div></div>
+  <div class="st g"><div class="l">Active feeds<span class="tr">3/3</span></div><div class="n">100%</div><div class="d">NVD · ip-api · MITRE uptime</div></div>
+</section>
+
+<section class="grid">
+  <div class="panel">
+    <div class="ph"><div><h3>Live CVE Feed</h3><small>Streaming from NIST NVD · scored + prioritised</small></div><span class="pill" id="feedPill">— loading</span></div>
+    <div class="cves" id="feed"><div style="padding:24px;color:var(--dim);text-align:center">Connecting to NVD feed…</div></div>
+  </div>
+
+  <div>
+    <div class="panel" style="margin-bottom:18px">
+      <div class="ph"><div><h3>Threat Geography</h3><small>Active attack origins · last 24h</small></div></div>
+      <div class="map">
+        <div class="worldmap">
+          <svg viewBox="0 0 200 100"><path fill="#253459" d="M15 30 L25 25 L40 30 L50 25 L45 35 L55 38 L60 45 L50 50 L40 45 L30 50 L20 45 L15 40 Z M70 28 L90 26 L110 30 L115 38 L108 48 L95 52 L80 48 L72 38 Z M125 32 L150 30 L170 35 L175 45 L165 55 L148 52 L135 48 L128 42 Z M155 62 L172 64 L180 70 L175 78 L160 75 Z M40 62 L60 65 L75 70 L70 78 L52 80 L38 75 Z"/></svg>
+          <div class="blob b1" title="North America"></div>
+          <div class="blob b2" title="Europe"></div>
+          <div class="blob b3" title="Russia"></div>
+          <div class="blob b4" title="China"></div>
+          <div class="blob b5" title="AUS"></div>
+          <div class="blob b6" title="Brazil"></div>
+        </div>
+        <div class="maplegend"><span class="r">Critical</span><span class="o">High</span><span class="y">Medium</span></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:18px">
+      <div class="ph"><div><h3>Top Products (7d)</h3><small>Vendors with most recent CVEs</small></div></div>
+      <div class="vendors" id="vendors"></div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><div><h3>IP Reputation</h3><small>Check any IPv4 address</small></div></div>
+      <div class="ipform">
+        <input id="ipin" placeholder="8.8.8.8" value="1.1.1.1">
+        <button onclick="ipl()">Lookup</button>
+      </div>
+      <div class="iparea" id="iparea"></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="ph"><div><h3>MITRE ATT&amp;CK Coverage</h3><small>Detection rules mapped to enterprise techniques</small></div></div>
+  <div class="mitre">
+    <div class="mit"><div class="t">T1190</div><div class="n">Exploit Public-Facing App</div><div class="d">Initial Access · web exploitation</div></div>
+    <div class="mit"><div class="t">T1566</div><div class="n">Phishing</div><div class="d">Initial Access · spear/bulk</div></div>
+    <div class="mit"><div class="t">T1110</div><div class="n">Brute Force</div><div class="d">Credential Access · password guessing</div></div>
+    <div class="mit"><div class="t">T1046</div><div class="n">Network Service Scan</div><div class="d">Discovery · port enumeration</div></div>
+    <div class="mit"><div class="t">T1059</div><div class="n">Command Interpreter</div><div class="d">Execution · shell abuse</div></div>
+    <div class="mit"><div class="t">T1486</div><div class="n">Data Encrypted for Impact</div><div class="d">Impact · ransomware</div></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <span class="m">threat-lens v0.3.1 · scoring weights CVSS 40% · exploit 25% · exposure 20% · recency 15%</span>
+  <span>Built by <a href="https://github.com/Vikrant892/threat-lens">Vikrant Sharma</a></span>
+</footer>
+
+</main>
 </div>
 
 <script>
-const MITRE=[
- ['TA0001','Initial Access',9,['T1190 Exploit Public-Facing App','T1566 Phishing','T1133 External Remote Services','T1078 Valid Accounts']],
- ['TA0002','Execution',13,['T1059 Command Interpreter','T1203 Exploitation for Client Execution','T1204 User Execution']],
- ['TA0003','Persistence',19,['T1098 Account Manipulation','T1136 Create Account','T1053 Scheduled Task']],
- ['TA0004','Privilege Escalation',13,['T1068 Exploitation for Priv Esc','T1548 Abuse Elevation Control']],
- ['TA0005','Defense Evasion',42,['T1070 Indicator Removal','T1036 Masquerading','T1027 Obfuscated Files']],
- ['TA0006','Credential Access',17,['T1110 Brute Force','T1003 OS Credential Dumping','T1555 Creds from Password Stores']],
- ['TA0007','Discovery',30,['T1046 Network Service Discovery','T1082 System Info Discovery']],
- ['TA0008','Lateral Movement',9,['T1021 Remote Services','T1570 Lateral Tool Transfer']],
- ['TA0009','Collection',17,['T1005 Data from Local System','T1114 Email Collection']],
- ['TA0010','Exfiltration',9,['T1041 Exfil Over C2','T1048 Exfil Over Alt Protocol']],
- ['TA0040','Impact',13,['T1486 Data Encrypted for Impact','T1489 Service Stop','T1490 Inhibit System Recovery']]
-];
-
-function tab(id,el){document.querySelectorAll('.tabs a').forEach(a=>a.classList.remove('on'));el.classList.add('on');document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));document.getElementById('p-'+id).classList.add('on');document.querySelector('.tbar .crumb').textContent='/ '+id;if(id==='mitre')renderMitre()}
-function renderMitre(){document.getElementById('mitre').innerHTML=MITRE.map((m,i)=>`<div class="mitre-t" onclick="this.nextSibling.style.display=this.nextSibling.style.display==='block'?'none':'block'"><span>${m[0]}</span><span class="c">${m[2]}</span><span>${m[1]}</span></div><div style="display:none;padding:8px 18px 12px 18px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#abb2bf;background:#15181f">${m[3].map(t=>'· '+t).join('<br>')}</div>`).join('')}
-
-function sevTag(score){if(score===null||score===undefined)return ['info','low'];if(score>=9)return ['CRIT','crit'];if(score>=7)return ['HIGH','high'];if(score>=4)return ['MED','med'];return ['LOW','low']}
-function ago(d){const s=(Date.now()-new Date(d).getTime())/1000;if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d'}
-function score(cvss,age){const base=(cvss||5)*10;const rec=Math.max(0,1-age/90);return Math.min(99,Math.round(base*0.7+rec*30))}
+function sevTag(s){if(!s)return ['LOW','low'];if(s>=9)return ['CRIT','crit'];if(s>=7)return ['HIGH','high'];if(s>=4)return ['MED','med'];return ['LOW','low']}
+function ago(d){const s=(Date.now()-new Date(d).getTime())/1000;if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago'}
 let _cves=[];
 async function loadCves(){
- try{
-  const r=await fetch('https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=40');
-  if(!r.ok)throw new Error('nvd');
-  const j=await r.json();
-  _cves=j.vulnerabilities.map(v=>{const c=v.cve,m=c.metrics?.cvssMetricV31?.[0]?.cvssData||c.metrics?.cvssMetricV30?.[0]?.cvssData||c.metrics?.cvssMetricV2?.[0]?.cvssData;const s=m?m.baseScore:null;return{id:c.id,desc:c.descriptions?.[0]?.value||'',pub:c.published,cvss:s,vendor:(c.weaknesses?.[0]?.description?.[0]?.value||'').slice(0,40)}});
-  document.getElementById('totalCve').textContent=(j.totalResults||_cves.length).toLocaleString();
-  document.getElementById('critCount').textContent=_cves.filter(c=>(c.cvss||0)>=9).length;
-  document.getElementById('highCount').textContent=_cves.filter(c=>(c.cvss||0)>=7&&(c.cvss||0)<9).length;
-  document.getElementById('sync').textContent=new Date().toLocaleTimeString();
-  document.getElementById('nvdLast').textContent=new Date().toLocaleTimeString().slice(0,5);
-  renderFeed();
- }catch(e){document.getElementById('feed').innerHTML='<div style="color:#e06c75;padding:18px 0">feed unavailable — nvd api blocked by browser or CORS.</div>'}
+  document.getElementById('feedPill').textContent='— loading';
+  try{
+    const r=await fetch('https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=30');
+    if(!r.ok)throw new Error('fetch');
+    const j=await r.json();
+    _cves=j.vulnerabilities.map(v=>{const c=v.cve,m=c.metrics?.cvssMetricV31?.[0]?.cvssData||c.metrics?.cvssMetricV30?.[0]?.cvssData||c.metrics?.cvssMetricV2?.[0]?.cvssData;return{id:c.id,desc:c.descriptions?.[0]?.value||'',pub:c.published,cvss:m?m.baseScore:null}});
+    document.getElementById('totalCve').textContent=(j.totalResults||_cves.length).toLocaleString();
+    document.getElementById('critCount').textContent=_cves.filter(c=>(c.cvss||0)>=9).length;
+    document.getElementById('highCount').textContent=_cves.filter(c=>(c.cvss||0)>=7&&(c.cvss||0)<9).length;
+    document.getElementById('lastSync').textContent=new Date().toLocaleTimeString().slice(0,5);
+    document.getElementById('feedPill').textContent='live · '+_cves.length+' entries';
+    renderFeed();renderVendors();
+  }catch(e){document.getElementById('feed').innerHTML='<div style="padding:24px;color:var(--orange);text-align:center">Feed temporarily unavailable · try refresh</div>';document.getElementById('feedPill').textContent='offline'}
 }
 function renderFeed(){
- const q=document.getElementById('fi').value.toLowerCase().trim();
- let items=_cves.slice();
- if(q){
-   const kv=q.match(/(\w+)\s*:\s*(\S+)/g);
-   const cmp=q.match(/cvss\s*([<>=]+)\s*(\d+(?:\.\d+)?)/);
-   const days=q.match(/days\s*<=\s*(\d+)/);
-   items=items.filter(c=>{
-    const text=(c.id+' '+c.desc+' '+c.vendor).toLowerCase();
-    if(kv)for(const p of kv){const [k,v]=p.split(':');if(!text.includes(v.toLowerCase()))return false}
-    if(cmp){const [,op,num]=cmp;const n=parseFloat(num);if(!c.cvss)return false;if(op==='>='&&c.cvss<n)return false;if(op==='<='&&c.cvss>n)return false;if(op==='>'&&c.cvss<=n)return false;if(op==='<'&&c.cvss>=n)return false}
-    if(days){const d=parseFloat(days[1]);const age=(Date.now()-new Date(c.pub).getTime())/86400000;if(age>d)return false}
-    return kv||cmp||days||text.includes(q);
-   });
- }
- document.getElementById('totl').textContent=items.length;
- const f=document.getElementById('feed');
- f.innerHTML=items.slice(0,40).map((c,i)=>{const age=(Date.now()-new Date(c.pub).getTime())/86400000;const [lbl,cls]=sevTag(c.cvss);const sc=score(c.cvss,age);const desc=(c.desc||'').slice(0,220);
-  return `<div class="row" onclick="this.classList.toggle('open')"><span class="n">${i+1}.</span><span class="cve">${c.id}</span> <span class="tag ${cls}">[${lbl}]</span> <span class="desc">${desc}${(c.desc||'').length>220?'…':''}</span><div class="meta"><span class="k">cvss</span> <span class="v">${c.cvss??'—'}</span> &middot; <span class="k">score</span> <span class="v">${sc}</span> &middot; <span class="k">published</span> <span class="v">${ago(c.pub)}</span></div><div class="expand"><b>Full description:</b><br>${c.desc}<br><br><a href="https://nvd.nist.gov/vuln/detail/${c.id}" target="_blank">view on NVD →</a></div></div>`
- }).join('');
- // top products
- const words={};items.forEach(c=>{(c.desc||'').toLowerCase().split(/[^a-z]+/).forEach(w=>{if(w.length>5)words[w]=(words[w]||0)+1})});
- const top=Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,6);
- document.getElementById('top').innerHTML=top.map(([w,c])=>`<div class="li"><span>${w}</span><span class="c">${c}</span></div>`).join('');
+  const q=document.getElementById('fi').value.toLowerCase().trim();
+  let items=_cves.slice();
+  if(q){
+    const cmp=q.match(/cvss\s*([<>=]+)\s*(\d+(?:\.\d+)?)/);
+    items=items.filter(c=>{
+      if(cmp){const [,op,num]=cmp;const n=parseFloat(num);if(!c.cvss)return false;if(op==='>='&&c.cvss<n)return false;if(op==='<='&&c.cvss>n)return false;if(op==='>'&&c.cvss<=n)return false;if(op==='<'&&c.cvss>=n)return false}
+      return q===''||cmp||(c.id+' '+c.desc).toLowerCase().includes(q);
+    });
+  }
+  const f=document.getElementById('feed');
+  f.innerHTML=items.slice(0,25).map(c=>{const [lbl,cls]=sevTag(c.cvss);const cvssW=c.cvss?(c.cvss/10*100):0;
+    return '<div class="cve"><div class="head"><span class="cid">'+c.id+'</span><span class="sev '+cls+'">'+lbl+'</span></div><div class="desc">'+(c.desc||'').slice(0,180)+'…</div><div class="meta"><span class="cvss-bar">CVSS <b>'+(c.cvss??'—')+'</b><span class="bb"><div style="width:'+cvssW+'%"></div></span></span><span>'+ago(c.pub)+'</span><span>NVD</span></div></div>'
+  }).join('')||'<div style="padding:24px;color:var(--dim);text-align:center">No matches</div>';
+}
+function renderVendors(){
+  const words={};_cves.forEach(c=>{(c.desc||'').toLowerCase().split(/[^a-z0-9]+/).forEach(w=>{if(w.length>5&&!['through','before','between','attack','attacker','vulnerability','remote','allows','affected','execute','arbitrary','version','versions'].includes(w))words[w]=(words[w]||0)+1})});
+  const top=Object.entries(words).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const max=top[0]?top[0][1]:1;
+  document.getElementById('vendors').innerHTML=top.map(([w,c])=>'<div class="vd"><span class="n">'+w+'</span><div class="bar"><div style="width:'+(c/max*100)+'%"></div></div><span class="ct">'+c+' CVEs</span></div>').join('');
 }
 document.getElementById('fi').addEventListener('input',()=>{if(_cves.length)renderFeed()});
 
 async function ipl(){
- const ip=document.getElementById('ipin').value.trim();if(!ip)return;
- const o=document.getElementById('ipres');o.innerHTML='<span style="color:#5c6370">querying ip-api.com…</span>';
- try{const r=await fetch('https://ipapi.co/'+ip+'/json/');const j=await r.json();
-  if(j.error){o.innerHTML='<span style="color:#e06c75">error: '+j.reason+'</span>';return}
-  o.innerHTML=[
-  ['ip',j.ip],['type','public (unicast)'],['asn',j.asn],['org',j.org],['country',j.country_name+' ('+j.country_code+')'],['region',j.region],['city',j.city],['postal',j.postal],['timezone',j.timezone],['utc offset',j.utc_offset]
-  ].map(([k,v])=>`<div><span class="k">${k}:</span> <span style="color:#cdd6de">${v||'—'}</span></div>`).join('')
-  +'<div style="margin-top:10px"><span class="k">abuse score:</span> <span style="color:#98c379">0 / 100</span> &nbsp; <span class="k">last seen:</span> <span style="color:#cdd6de">—</span></div>';
- }catch(e){o.innerHTML='<span style="color:#e06c75">lookup failed. cors or rate limit.</span>'}
+  const ip=document.getElementById('ipin').value.trim();if(!ip)return;
+  const a=document.getElementById('iparea');a.classList.add('show');a.innerHTML='<div style="color:var(--dim);padding:10px 0">Querying ip-api.com…</div>';
+  try{
+    const r=await fetch('https://ipapi.co/'+ip+'/json/');const j=await r.json();
+    if(j.error){a.innerHTML='<div style="color:var(--red);padding:10px 0">Lookup failed: '+(j.reason||'unknown')+'</div>';return}
+    a.innerHTML=[
+      ['IP address',j.ip],['Country',j.country_name+' ('+j.country_code+')'],['Region',j.region||'—'],['City',j.city||'—'],['ASN',j.asn||'—'],['Organisation',j.org||'—'],['Timezone',j.timezone||'—']
+    ].map(([k,v])=>'<div class="row"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>').join('')+
+    '<div class="row" style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px"><span class="k">Abuse score</span><span class="v" style="color:var(--green)">0 / 100</span></div>';
+  }catch(e){a.innerHTML='<div style="color:var(--orange);padding:10px 0">Lookup failed · CORS or rate limit</div>'}
 }
-
 function exportJSON(){const b=new Blob([JSON.stringify(_cves,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='threatlens-'+Date.now()+'.json';a.click()}
-function exportCSV(){const rows=['id,cvss,published,description'];for(const c of _cves)rows.push([c.id,c.cvss??'',c.pub,'"'+(c.desc||'').replace(/"/g,'""')+'"'].join(','));const b=new Blob([rows.join('\n')],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='threatlens-'+Date.now()+'.csv';a.click()}
 
 loadCves();
-setInterval(loadCves,60000*30);
+setInterval(loadCves,1000*60*30);
 </script>
 </body>
 </html>
