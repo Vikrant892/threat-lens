@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import re
-from functools import lru_cache
 from typing import Optional
 
 from threat_lens.models import MITRETechnique
