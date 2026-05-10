@@ -10,9 +10,12 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Optional
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from threat_lens.feed_aggregator import FeedAggregator
 from threat_lens.ip_analyzer import IPAnalyzer
@@ -278,3 +281,21 @@ def dashboard_stats():
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
+
+
+# ---------------------------------------------------------------------------
+# Frontend (mounted last so /api/* and /healthz keep priority)
+# ---------------------------------------------------------------------------
+
+_frontend_dir = Path(__file__).parent / "frontend"
+if _frontend_dir.is_dir() and (_frontend_dir / "index.html").is_file():
+    @app.get("/", include_in_schema=False)
+    async def frontend_root():
+        return FileResponse(_frontend_dir / "index.html")
+
+    app.mount("/static", StaticFiles(directory=str(_frontend_dir)), name="static")
+else:
+    # No frontend bundled — at least don't 404 the root.
+    @app.get("/", include_in_schema=False)
+    async def root_redirect():
+        return RedirectResponse(url="/docs")
