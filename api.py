@@ -289,6 +289,7 @@ def healthz():
 
 _frontend_dir = Path(__file__).parent / "frontend"
 if _frontend_dir.is_dir() and (_frontend_dir / "index.html").is_file():
+
     @app.get("/", include_in_schema=False)
     async def frontend_root():
         return FileResponse(_frontend_dir / "index.html")
