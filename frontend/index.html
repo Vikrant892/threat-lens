@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ThreatLens — Real-Time Threat Intelligence</title>
+<title>ThreatLens - Real-Time Threat Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -178,7 +178,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,
 
   <div class="feed-mini">
     <h5>Feed Status<span class="live">LIVE</span></h5>
-    <div class="kv"><span class="k">NVD</span><span class="v" id="lastSync">—</span></div>
+    <div class="kv"><span class="k">NVD</span><span class="v" id="lastSync">-</span></div>
     <div class="kv"><span class="k">ip-api</span><span class="v">on demand</span></div>
     <div class="kv"><span class="k">MITRE</span><span class="v">7d ago</span></div>
     <div class="kv" style="border-top:1px solid var(--line);padding-top:8px;margin-top:8px"><span class="k">Latency</span><span class="v" style="color:var(--green)">p50 142ms</span></div>
@@ -196,16 +196,16 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,
 </header>
 
 <section class="stats">
-  <div class="st c"><div class="l">CVEs Tracked<span class="tr up">▲ 42</span></div><div class="n" id="totalCve">—</div><div class="d">across all feeds · last 24h</div></div>
-  <div class="st r"><div class="l">Critical (7d)<span class="tr up">▲ 4</span></div><div class="n" id="critCount">—</div><div class="d">CVSS ≥ 9.0 · public exploits likely</div></div>
-  <div class="st o"><div class="l">High severity<span class="tr up">▲ 12</span></div><div class="n" id="highCount">—</div><div class="d">CVSS 7.0–8.9 · within SLA window</div></div>
+  <div class="st c"><div class="l">CVEs Tracked<span class="tr up">▲ 42</span></div><div class="n" id="totalCve">-</div><div class="d">across all feeds · last 24h</div></div>
+  <div class="st r"><div class="l">Critical (7d)<span class="tr up">▲ 4</span></div><div class="n" id="critCount">-</div><div class="d">CVSS ≥ 9.0 · public exploits likely</div></div>
+  <div class="st o"><div class="l">High severity<span class="tr up">▲ 12</span></div><div class="n" id="highCount">-</div><div class="d">CVSS 7.0-8.9 · within SLA window</div></div>
   <div class="st g"><div class="l">Active feeds<span class="tr">3/3</span></div><div class="n">100%</div><div class="d">NVD · ip-api · MITRE uptime</div></div>
 </section>
 
 <section class="grid">
   <div class="panel">
-    <div class="ph"><div><h3>Live CVE Feed</h3><small>Streaming from NIST NVD · scored + prioritised</small></div><span class="pill" id="feedPill">— loading</span></div>
-    <div class="cves" id="feed"><div style="padding:24px;color:var(--dim);text-align:center">Connecting to NVD feed…</div></div>
+    <div class="ph"><div><h3>Live CVE Feed</h3><small>Streaming from NIST NVD · scored + prioritised</small></div><span class="pill" id="feedPill">- loading</span></div>
+    <div class="cves" id="feed"><div style="padding:24px;color:var(--dim);text-align:center">Connecting to NVD feed...</div></div>
   </div>
 
   <div>
@@ -266,7 +266,7 @@ function sevTag(s){if(!s)return ['LOW','low'];if(s>=9)return ['CRIT','crit'];if(
 function ago(d){const s=(Date.now()-new Date(d).getTime())/1000;if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago'}
 let _cves=[];
 async function loadCves(){
-  document.getElementById('feedPill').textContent='— loading';
+  document.getElementById('feedPill').textContent='- loading';
   try{
     const r=await fetch('https://services.nvd.nist.gov/rest/json/cves/2.0?resultsPerPage=30');
     if(!r.ok)throw new Error('fetch');
@@ -292,7 +292,7 @@ function renderFeed(){
   }
   const f=document.getElementById('feed');
   f.innerHTML=items.slice(0,25).map(c=>{const [lbl,cls]=sevTag(c.cvss);const cvssW=c.cvss?(c.cvss/10*100):0;
-    return '<div class="cve"><div class="head"><span class="cid">'+c.id+'</span><span class="sev '+cls+'">'+lbl+'</span></div><div class="desc">'+(c.desc||'').slice(0,180)+'…</div><div class="meta"><span class="cvss-bar">CVSS <b>'+(c.cvss??'—')+'</b><span class="bb"><div style="width:'+cvssW+'%"></div></span></span><span>'+ago(c.pub)+'</span><span>NVD</span></div></div>'
+    return '<div class="cve"><div class="head"><span class="cid">'+c.id+'</span><span class="sev '+cls+'">'+lbl+'</span></div><div class="desc">'+(c.desc||'').slice(0,180)+'...</div><div class="meta"><span class="cvss-bar">CVSS <b>'+(c.cvss??'-')+'</b><span class="bb"><div style="width:'+cvssW+'%"></div></span></span><span>'+ago(c.pub)+'</span><span>NVD</span></div></div>'
   }).join('')||'<div style="padding:24px;color:var(--dim);text-align:center">No matches</div>';
 }
 function renderVendors(){
@@ -305,12 +305,12 @@ document.getElementById('fi').addEventListener('input',()=>{if(_cves.length)rend
 
 async function ipl(){
   const ip=document.getElementById('ipin').value.trim();if(!ip)return;
-  const a=document.getElementById('iparea');a.classList.add('show');a.innerHTML='<div style="color:var(--dim);padding:10px 0">Querying ip-api.com…</div>';
+  const a=document.getElementById('iparea');a.classList.add('show');a.innerHTML='<div style="color:var(--dim);padding:10px 0">Querying ip-api.com...</div>';
   try{
     const r=await fetch('https://ipapi.co/'+ip+'/json/');const j=await r.json();
     if(j.error){a.innerHTML='<div style="color:var(--red);padding:10px 0">Lookup failed: '+(j.reason||'unknown')+'</div>';return}
     a.innerHTML=[
-      ['IP address',j.ip],['Country',j.country_name+' ('+j.country_code+')'],['Region',j.region||'—'],['City',j.city||'—'],['ASN',j.asn||'—'],['Organisation',j.org||'—'],['Timezone',j.timezone||'—']
+      ['IP address',j.ip],['Country',j.country_name+' ('+j.country_code+')'],['Region',j.region||'-'],['City',j.city||'-'],['ASN',j.asn||'-'],['Organisation',j.org||'-'],['Timezone',j.timezone||'-']
     ].map(([k,v])=>'<div class="row"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>').join('')+
     '<div class="row" style="margin-top:10px;border-top:1px solid var(--line);padding-top:10px"><span class="k">Abuse score</span><span class="v" style="color:var(--green)">0 / 100</span></div>';
   }catch(e){a.innerHTML='<div style="color:var(--orange);padding:10px 0">Lookup failed · CORS or rate limit</div>'}

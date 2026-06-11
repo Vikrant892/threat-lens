@@ -45,7 +45,7 @@ class RateLimiter:
         self._timestamps = [t for t in self._timestamps if now - t < self._window]
         if len(self._timestamps) >= self._max:
             sleep_for = self._window - (now - self._timestamps[0]) + 0.1
-            logger.debug("Rate limit reached — sleeping %.1fs", sleep_for)
+            logger.debug("Rate limit reached - sleeping %.1fs", sleep_for)
             time.sleep(sleep_for)
         self._timestamps.append(time.monotonic())
 

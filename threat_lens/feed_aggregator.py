@@ -78,7 +78,7 @@ class FeedAggregator:
             for ev in new_events:
                 self._events[ev.event_id] = ev
 
-        logger.info("Feed refresh complete — %d events in store", len(self._events))
+        logger.info("Feed refresh complete - %d events in store", len(self._events))
         return new_events
 
     def add_ip_events(self, ips: list[str]) -> list[ThreatEvent]:
@@ -102,7 +102,7 @@ class FeedAggregator:
                 source=ThreatEventSource.IP_INTEL,
                 title=f"IP reputation: {intel.ip_address}",
                 description=(
-                    f"{intel.ip_address} — ISP: {intel.isp or 'unknown'}, "
+                    f"{intel.ip_address} - ISP: {intel.isp or 'unknown'}, "
                     f"Country: {intel.country or 'unknown'}, "
                     f"Abuse score: {intel.abuse_score:.0f}/100"
                 ),

@@ -1,4 +1,4 @@
-"""ThreatLens REST API — FastAPI application entry point."""
+"""ThreatLens REST API - FastAPI application entry point."""
 
 from __future__ import annotations
 
@@ -296,7 +296,7 @@ if _frontend_dir.is_dir() and (_frontend_dir / "index.html").is_file():
 
     app.mount("/static", StaticFiles(directory=str(_frontend_dir)), name="static")
 else:
-    # No frontend bundled — at least don't 404 the root.
+    # No frontend bundled - at least don't 404 the root.
     @app.get("/", include_in_schema=False)
     async def root_redirect():
         return RedirectResponse(url="/docs")

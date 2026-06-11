@@ -1,5 +1,5 @@
 """
-ThreatLens — Real-Time Threat Intelligence & Vulnerability Management Platform.
+ThreatLens - Real-Time Threat Intelligence & Vulnerability Management Platform.
 
 Aggregates CVE data from NVD, IP reputation intelligence, and MITRE ATT&CK
 mappings into a unified, scored threat feed designed to cut through SOC alert

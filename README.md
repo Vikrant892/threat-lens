@@ -4,7 +4,7 @@ Real-Time Threat Intelligence & Vulnerability Management Platform.
 
 ## The Problem
 
-Security Operations Centers drown in thousands of CVE alerts per week. Most are noise — low-severity findings on assets that don't exist in the environment, stale vulnerabilities that were patched months ago, or duplicates from overlapping scanners. Analysts waste hours triaging alerts that never mattered while genuinely dangerous issues sit in the queue.
+Security Operations Centers drown in thousands of CVE alerts per week. Most are noise - low-severity findings on assets that don't exist in the environment, stale vulnerabilities that were patched months ago, or duplicates from overlapping scanners. Analysts waste hours triaging alerts that never mattered while genuinely dangerous issues sit in the queue.
 
 ThreatLens fixes this by pulling CVE data from the NVD, enriching it with IP reputation intelligence and MITRE ATT&CK technique mappings, and running every finding through a composite scoring engine that factors in CVSS severity, exploit availability, asset exposure, and temporal relevance. The result is a single, prioritised threat feed that surfaces what actually needs attention.
 
@@ -61,7 +61,7 @@ docker run -p 8000:8000 threat-lens
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `NVD_API_KEY` | *(none)* | NVD API key — raises rate limit from 5 to 50 req/30 s |
+| `NVD_API_KEY` | *(none)* | NVD API key - raises rate limit from 5 to 50 req/30 s |
 | `FEED_AUTO_REFRESH` | `false` | Start background feed refresh on boot |
 | `FEED_REFRESH_INTERVAL` | `900` | Seconds between automatic feed refreshes |
 | `CORS_ORIGINS` | `*` | Comma-separated allowed origins |
@@ -131,21 +131,21 @@ curl "http://localhost:8000/api/mitre/techniques?tactic=Initial+Access"
 
 Screenshots are located in `docs/screenshots/`:
 
-- `docs/screenshots/dashboard.png` — Main threat dashboard
-- `docs/screenshots/cve-detail.png` — CVE detail view with threat score breakdown
-- `docs/screenshots/feed.png` — Aggregated threat feed
+- `docs/screenshots/dashboard.png` - Main threat dashboard
+- `docs/screenshots/cve-detail.png` - CVE detail view with threat score breakdown
+- `docs/screenshots/feed.png` - Aggregated threat feed
 
 ## Tech Stack
 
-- **Python 3.12** — Runtime
-- **FastAPI** — REST API framework
-- **Pydantic v2** — Data validation and serialisation
-- **Requests** — HTTP client with session pooling and retry
-- **NVD CVE API v2.0** — Vulnerability data source
-- **ip-api.com** — IP geolocation (free tier, no key)
-- **ARIN RDAP** — WHOIS data fallback
-- **MITRE ATT&CK** — Technique mapping (bundled subset)
-- **Docker** — Container packaging
+- **Python 3.12** - Runtime
+- **FastAPI** - REST API framework
+- **Pydantic v2** - Data validation and serialisation
+- **Requests** - HTTP client with session pooling and retry
+- **NVD CVE API v2.0** - Vulnerability data source
+- **ip-api.com** - IP geolocation (free tier, no key)
+- **ARIN RDAP** - WHOIS data fallback
+- **MITRE ATT&CK** - Technique mapping (bundled subset)
+- **Docker** - Container packaging
 
 ## Project Structure
 

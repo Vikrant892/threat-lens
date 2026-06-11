@@ -38,11 +38,11 @@ class ThreatScorer:
 
     Components
     ----------
-    - CVSS base score (40 %) — normalised to 0-100 from the 0-10 CVSS range.
-    - Exploit availability (25 %) — 100 if a known-exploited flag is set, 0 otherwise.
-    - Asset exposure (20 %) — derived from the number of distinct affected products
+    - CVSS base score (40 %) - normalised to 0-100 from the 0-10 CVSS range.
+    - Exploit availability (25 %) - 100 if a known-exploited flag is set, 0 otherwise.
+    - Asset exposure (20 %) - derived from the number of distinct affected products
       and whether common infrastructure software is involved.
-    - Temporal relevance (15 %) — exponential decay with a configurable half-life
+    - Temporal relevance (15 %) - exponential decay with a configurable half-life
       so freshly published CVEs rank higher than stale ones.
     """
 
@@ -185,9 +185,9 @@ class ThreatScorer:
         factors: list[str] = []
 
         if cvss_c >= 90:
-            factors.append(f"CVSS {cve.base_score}/10 — critical base score")
+            factors.append(f"CVSS {cve.base_score}/10 - critical base score")
         elif cvss_c >= 70:
-            factors.append(f"CVSS {cve.base_score}/10 — high base score")
+            factors.append(f"CVSS {cve.base_score}/10 - high base score")
 
         if exploit_c >= 100:
             factors.append("Known exploited in the wild (CISA KEV)")
@@ -200,8 +200,8 @@ class ThreatScorer:
             factors.append("Multiple affected products increase blast radius")
 
         if temporal_c >= 80:
-            factors.append("Recently published — high temporal relevance")
+            factors.append("Recently published - high temporal relevance")
         elif temporal_c < 20:
-            factors.append("Aging CVE — lower temporal urgency")
+            factors.append("Aging CVE - lower temporal urgency")
 
         return factors
